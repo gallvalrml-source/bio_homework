@@ -236,6 +236,68 @@
         .sequence-list p {
             margin: 5px 0;
         }
+        /* АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 20px 15px;
+    }
+    
+    h1 {
+        font-size: 22px;
+    }
+    
+    .task {
+        padding: 15px;
+    }
+    
+    .task-title {
+        font-size: 16px;
+    }
+    
+    /* Картинки и SVG подстраиваются под ширину экрана */
+    .image-container svg {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    .image-container img {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    /* Таблицы можно прокручивать горизонтально */
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    /* Строки соответствия — в столбик на узких экранах */
+    .matching-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .matching-left, .matching-right {
+        width: 100%;
+    }
+    
+    /* Поля ввода на всю ширину */
+    select, input[type="text"], input[type="number"], textarea {
+        width: 100%;
+        font-size: 16px; /* чтобы iOS не зумил при фокусе */
+    }
+    
+    /* Кнопка на всю ширину */
+    .btn {
+        width: 100%;
+    }
+}
     </style>
 </head>
 <body>
