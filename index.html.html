@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ДЗ: Нуклеиновые кислоты</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .task {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 0 10px 10px 0;
+            transition: transform 0.2s;
+        }
+        
+        .task:hover {
+            transform: translateX(5px);
+        }
+        
+        .task-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .task-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .task-content {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .options {
+            margin-top: 15px;
+        }
+        
+        .option {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .option input[type="checkbox"],
+        .option input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .option.selected {
+            border-color: #667eea;
+            background: #e8eeff;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        
+        select, input[type="text"], input[type="number"] {
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 100%;
+        }
+        
+        select:focus, input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .image-caption {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .result.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 2px solid #4caf50;
+        }
+        
+        .result.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 2px solid #f44336;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            resize: vertical;
+            margin-top: 10px;
+        }
+        
+        .matching-row {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            gap: 20px;
+        }
+        
+        .matching-left {
+            flex: 1;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        
+        .matching-right {
+            flex: 1;
+        }
+        
+        .sequence-list {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            line-height: 1.8;
+        }
+        
+        .sequence-list p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧬 Нуклеиновые кислоты</h1>
+        
+        <!-- Задание 1: Выбор одного ответа -->
+        <div class="task" id="task1">
+            <div class="task-title"><span class="task-number">1</span>Выберите один правильный ответ</div>
+            <div class="task-content">
+                <p>Какой компонент НЕ входит в состав нуклеотида ДНК?</p>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Дезоксирибоза
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Остаток фосфорной кислоты
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Рибоза
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Азотистое основание
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Задание 2: Выбор нескольких ответов (НОВОЕ) -->
+        <div class="task" id="task2">
+            <div class="task-title"><span class="task-number">2</span>Выберите несколько правильных ответов</div>
+            <div class="task-content">
+                <p>Какие утверждения о молекуле ДНК верны? Выберите три правильных ответа.</p>
+                <div class="options">
+                    <label class="option">
+                        <input type="checkbox" name="q2" value="a"> Две цепи соединены водородными связями между комплементарными основаниями
+                    </label>
+                    <label class="option">
+                        <input type="checkbox" name="q2" value="b"> Цепи ДНК антипараллельны (направлены в противоположные стороны)
+                    </label>
+                    <label class="option">
+                        <input type="checkbox" name="q2" value="c"> В состав ДНК входят рибоза и урацил
+                    </label>
+                    <label class="option">
+                        <input type="checkbox" name="q2" value="d"> Сахарофосфатный остов расположен снаружи молекулы, а основания — внутри
+                    </label>
+                    <label class="option">
+                        <input type="checkbox" name="q2" value="e"> Цепи ДНК параллельны и направлены в одну сторону
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Задание 3: Соответствие -->
+        <div class="task" id="task3">
+            <div class="task-title"><span class="task-number">3</span>Установите соответствие</div>
+            <div class="task-content">
+                <p>Установите соответствие между азотистыми основаниями и типами нуклеиновых кислот, в которых они встречаются:</p>
+                <div class="matching-row">
+                    <div class="matching-left">А) Аденин</div>
+                    <div class="matching-right">
+                        <select id="q3a">
+                            <option value="">Выберите...</option>
+                            <option value="1">Только в ДНК</option>
+                            <option value="2">Только в РНК</option>
+                            <option value="3">В ДНК и РНК</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="matching-row">
+                    <div class="matching-left">Б) Тимин</div>
+                    <div class="matching-right">
+                        <select id="q3b">
+                            <option value="">Выберите...</option>
+                            <option value="1">Только в ДНК</option>
+                            <option value="2">Только в РНК</option>
+                            <option value="3">В ДНК и РНК</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="matching-row">
+                    <div class="matching-left">В) Урацил</div>
+                    <div class="matching-right">
+                        <select id="q3c">
+                            <option value="">Выберите...</option>
+                            <option value="1">Только в ДНК</option>
+                            <option value="2">Только в РНК</option>
+                            <option value="3">В ДНК и РНК</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="matching-row">
+                    <div class="matching-left">Г) Цитозин</div>
+                    <div class="matching-right">
+                        <select id="q3d">
+                            <option value="">Выберите...</option>
+                            <option value="1">Только в ДНК</option>
+                            <option value="2">Только в РНК</option>
+                            <option value="3">В ДНК и РНК</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Задание 4: Работа с рисунком (нумерация) -->
+        <div class="task" id="task4">
+            <div class="task-title"><span class="task-number">4</span>Работа с рисунком</div>
+            <div class="task-content">
+                <p>Рассмотрите схему строения нуклеотида. Укажите цифрой, чем обозначена <b>фосфатная группа</b>:</p>
+                <div class="image-container">
+                    <svg width="400" height="320" viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Фосфатная группа (цифра 1) -->
+                        <circle cx="200" cy="50" r="35" fill="#ff7043" stroke="#d84315" stroke-width="2"/>
+                        <text x="200" y="58" text-anchor="middle" fill="white" font-size="20" font-weight="bold">P</text>
+                        <circle cx="245" cy="25" r="15" fill="#ffcc80" stroke="#ef6c00" stroke-width="2"/>
+                        <text x="245" y="30" text-anchor="middle" fill="#5d4037" font-size="16" font-weight="bold">1</text>
+
+                        <!-- Линия связи фосфат-сахар -->
+                        <line x1="200" y1="85" x2="200" y2="130" stroke="#555" stroke-width="3"/>
+
+                        <!-- Сахар (пятиугольник, цифра 3) -->
+                        <polygon points="200,130 245,160 230,210 170,210 155,160" fill="#81c784" stroke="#2e7d32" stroke-width="2"/>
+                        <text x="200" y="180" text-anchor="middle" fill="white" font-size="16" font-weight="bold">C₅H₁₀O₄</text>
+                        <circle cx="265" cy="175" r="15" fill="#ffcc80" stroke="#ef6c00" stroke-width="2"/>
+                        <text x="265" y="180" text-anchor="middle" fill="#5d4037" font-size="16" font-weight="bold">3</text>
+
+                        <!-- Линия связи сахар-основание -->
+                        <line x1="170" y1="210" x2="120" y2="250" stroke="#555" stroke-width="3"/>
+
+                        <!-- Азотистое основание (шестиугольник, цифра 2) -->
+                        <polygon points="120,250 150,265 150,295 120,310 90,295 90,265" fill="#64b5f6" stroke="#1565c0" stroke-width="2"/>
+                        <text x="120" y="285" text-anchor="middle" fill="white" font-size="14" font-weight="bold">А, Г, Ц, Т</text>
+                        <circle cx="55" cy="280" r="15" fill="#ffcc80" stroke="#ef6c00" stroke-width="2"/>
+                        <text x="55" y="285" text-anchor="middle" fill="#5d4037" font-size="16" font-weight="bold">2</text>
+                    </svg>
+                    <p class="image-caption">Строение нуклеотида ДНК</p>
+                </div>
+                <input type="number" id="q4" min="1" max="3" placeholder="Введите цифру" style="width: 100px; margin-top: 10px;">
+            </div>
+        </div>
+
+        <!-- Задание 5: Таблица с пропусками (без подсказок) -->
+        <div class="task" id="task5">
+            <div class="task-title"><span class="task-number">5</span>Заполните таблицу</div>
+            <div class="task-content">
+                <p>Заполните пропуски в таблице «Типы РНК и их функции»:</p>
+                <table>
+                    <tr>
+                        <th>Тип РНК</th>
+                        <th>Функция</th>
+                        <th>Место синтеза</th>
+                    </tr>
+                    <tr>
+                        <td>иРНК (мРНК)</td>
+                        <td><input type="text" id="q5a"></td>
+                        <td>Ядро</td>
+                    </tr>
+                    <tr>
+                        <td>тРНК</td>
+                        <td>Транспорт аминокислот</td>
+                        <td><input type="text" id="q5b"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="q5c"></td>
+                        <td>Входит в состав рибосом</td>
+                        <td>Ядрышко</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Задание 6: Последовательность (НОВЫЙ ФОРМАТ) -->
+        <div class="task" id="task6">
+            <div class="task-title"><span class="task-number">6</span>Установите последовательность</div>
+            <div class="task-content">
+                <p>Установите правильную последовательность процессов при реализации наследственной информации в клетке. Запишите ответ в виде последовательности цифр (например, 31425):</p>
+                <div class="sequence-list">
+                    <p><b>1)</b> Образование пептидной связи между аминокислотами</p>
+                    <p><b>2)</b> Транскрипция — синтез иРНК на матрице ДНК</p>
+                    <p><b>3)</b> Выход иРНК из ядра в цитоплазму</p>
+                    <p><b>4)</b> Присоединение тРНК с аминокислотой к рибосоме</p>
+                    <p><b>5)</b> Выход тРНК из рибосомы</p>
+                </div>
+                <input type="text" id="q6" placeholder="Введите последовательность цифр" style="width: 200px; margin-top: 10px;">
+            </div>
+        </div>
+
+        <!-- Задание 7: Выбор нескольких (функции) -->
+        <div class="task" id="task7">
+            <div class="task-title"><span class="task-number">7</span>Выберите несколько правильных ответов</div>
+            <div class="task-content">
+                <p>Какие функции выполняет ДНК в клетке? Выберите три верных ответа.</p>
+                <div class="options">
+                    <label class="option">
+                        <input type="checkbox" name="q7" value="a"> Хранение наследственной информации
+                    </label>
+                    <label class="option">
+                        <input type="checkbox" name="q7" value="b"> Участие в синтезе АТФ
+                    </label>
+                    <label class="option">
+                        <input type="checkbox" name="q7" value="c"> Передача информации при делении клетки
+                    </label>
+                    <label class="option">
+                        <input type="checkbox" name="q7" value="d"> Каталитическая функция
+                    </label>
+                    <label class="option">
+                        <input type="checkbox" name="q7" value="e"> Матрица для синтеза РНК
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Задание 8: Соответствие (виды РНК, с добавлением рРНК) -->
+        <div class="task" id="task8">
+            <div class="task-title"><span class="task-number">8</span>Установите соответствие</div>
+            <div class="task-content">
+                <p>Установите соответствие между характеристиками и видами РНК:</p>
+                <div class="matching-row">
+                    <div class="matching-left">А) Имеет форму клеверного листа</div>
+                    <div class="matching-right">
+                        <select id="q8a">
+                            <option value="">Выберите...</option>
+                            <option value="1">иРНК</option>
+                            <option value="2">тРНК</option>
+                            <option value="3">рРНК</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="matching-row">
+                    <div class="matching-left">Б) Содержит антикодон</div>
+                    <div class="matching-right">
+                        <select id="q8b">
+                            <option value="">Выберите...</option>
+                            <option value="1">иРНК</option>
+                            <option value="2">тРНК</option>
+                            <option value="3">рРНК</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="matching-row">
+                    <div class="matching-left">В) Переносит информацию о структуре белка</div>
+                    <div class="matching-right">
+                        <select id="q8c">
+                            <option value="">Выберите...</option>
+                            <option value="1">иРНК</option>
+                            <option value="2">тРНК</option>
+                            <option value="3">рРНК</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="matching-row">
+                    <div class="matching-left">Г) Входит в состав рибосом и участвует в формировании их активного центра</div>
+                    <div class="matching-right">
+                        <select id="q8d">
+                            <option value="">Выберите...</option>
+                            <option value="1">иРНК</option>
+                            <option value="2">тРНК</option>
+                            <option value="3">рРНК</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Задание 9: Свободный ответ (НОВОЕ) -->
+        <div class="task" id="task9">
+            <div class="task-title"><span class="task-number">9</span>Задание со свободным ответом</div>
+            <div class="task-content">
+                <p>Объясните, в чём заключается принцип комплементарности азотистых оснований и в каких клеточных процессах он применим. Предположите, какое биологическое значение у данного принципа?</p>
+                <textarea id="q9" placeholder="Введите ваш ответ..."></textarea>
+                
+                <div id="model-answer-9" style="display: none; margin-top: 15px; padding: 15px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 5px;">
+                    <strong>📌 Эталонный ответ (критерии проверки):</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.6;">
+                        <li>Принцип комплементарности: азотистые основания соединяются по строгому правилу — аденин (А) комплементарен тимину (Т) в ДНК или урацилу (У) в РНК, а гуанин (Г) комплементарен цитозину (Ц).</li>
+                        <li>Репликация (самоудвоение ДНК).</li>
+                        <li>Транскрипция: синтез иРНК по матрице ДНК.</li>
+                        <li>Биологическое значение: обеспечивает передачу и реализацию наследственной информации без искажений и ошибок.</li>
+                    </ul>
+                    <label style="display: flex; align-items: center; margin-top: 15px; cursor: pointer; font-weight: bold; color: #1565c0;">
+                        <input type="checkbox" id="self-check-9" style="width: 20px; height: 20px; margin-right: 10px;">
+                        Я проверил(а) свой ответ: он содержит все ключевые элементы из списка выше
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Задание 10: Работа с рисунком (двойная спираль) -->
+        <div class="task" id="task10">
+            <div class="task-title"><span class="task-number">10</span>Работа с рисунком</div>
+            <div class="task-content">
+                <p>Рассмотрите схему фрагмента молекулы ДНК. Какой цифрой обозначены <b>водородные связи</b> между комплементарными основаниями?</p>
+                <div class="image-container">
+                    <svg width="450" height="400" viewBox="0 0 450 400" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Левая спиральная цепь (сахарофосфатный остов) -->
+                        <path d="M 80,30 Q 120,80 80,130 Q 40,180 80,230 Q 120,280 80,330 Q 40,380 80,400" 
+                              stroke="#ff7043" stroke-width="8" fill="none"/>
+                        
+                        <!-- Правая спиральная цепь (сахарофосфатный остов) -->
+                        <path d="M 370,30 Q 330,80 370,130 Q 410,180 370,230 Q 330,280 370,330 Q 410,380 370,400" 
+                              stroke="#ff7043" stroke-width="8" fill="none"/>
+                        
+                        <!-- Азотистые основания (перекладины) -->
+                        <!-- Уровень 1: А-Т -->
+                        <rect x="100" y="50" width="80" height="25" rx="3" fill="#64b5f6" stroke="#1565c0" stroke-width="2"/>
+                        <text x="140" y="67" text-anchor="middle" fill="white" font-size="14" font-weight="bold">А</text>
+                        <rect x="270" y="50" width="80" height="25" rx="3" fill="#81c784" stroke="#2e7d32" stroke-width="2"/>
+                        <text x="310" y="67" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Т</text>
+                        
+                        <!-- Уровень 2: Г-Ц -->
+                        <rect x="100" y="110" width="80" height="25" rx="3" fill="#ba68c8" stroke="#6a1b9a" stroke-width="2"/>
+                        <text x="140" y="127" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Г</text>
+                        <rect x="270" y="110" width="80" height="25" rx="3" fill="#ffb74d" stroke="#ef6c00" stroke-width="2"/>
+                        <text x="310" y="127" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Ц</text>
+                        
+                        <!-- Уровень 3: Т-А -->
+                        <rect x="100" y="170" width="80" height="25" rx="3" fill="#81c784" stroke="#2e7d32" stroke-width="2"/>
+                        <text x="140" y="187" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Т</text>
+                        <rect x="270" y="170" width="80" height="25" rx="3" fill="#64b5f6" stroke="#1565c0" stroke-width="2"/>
+                        <text x="310" y="187" text-anchor="middle" fill="white" font-size="14" font-weight="bold">А</text>
+                        
+                        <!-- Уровень 4: Ц-Г -->
+                        <rect x="100" y="230" width="80" height="25" rx="3" fill="#ffb74d" stroke="#ef6c00" stroke-width="2"/>
+                        <text x="140" y="247" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Ц</text>
+                        <rect x="270" y="230" width="80" height="25" rx="3" fill="#ba68c8" stroke="#6a1b9a" stroke-width="2"/>
+                        <text x="310" y="247" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Г</text>
+                        
+                        <!-- Уровень 5: А-Т -->
+                        <rect x="100" y="290" width="80" height="25" rx="3" fill="#64b5f6" stroke="#1565c0" stroke-width="2"/>
+                        <text x="140" y="307" text-anchor="middle" fill="white" font-size="14" font-weight="bold">А</text>
+                        <rect x="270" y="290" width="80" height="25" rx="3" fill="#81c784" stroke="#2e7d32" stroke-width="2"/>
+                        <text x="310" y="307" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Т</text>
+                        
+                        <!-- ВОДОРОДНЫЕ СВЯЗИ -->
+                        <!-- А-Т: 2 связи -->
+                        <line x1="180" y1="59" x2="270" y2="59" stroke="#555" stroke-width="2" stroke-dasharray="5,4"/>
+                        <line x1="180" y1="65" x2="270" y2="65" stroke="#555" stroke-width="2" stroke-dasharray="5,4"/>
+                        
+                        <line x1="180" y1="179" x2="270" y2="179" stroke="#555" stroke-width="2" stroke-dasharray="5,4"/>
+                        <line x1="180" y1="185" x2="270" y2="185" stroke="#555" stroke-width="2" stroke-dasharray="5,4"/>
+                        
+                        <line x1="180" y1="299" x2="270" y2="299" stroke="#555" stroke-width="2" stroke-dasharray="5,4"/>
+                        <line x1="180" y1="305" x2="270" y2="305" stroke="#555" stroke-width="2" stroke-dasharray="5,4"/>
+                        
+                        <!-- Г-Ц: 3 связи -->
+                        <line x1="180" y1="118" x2="270" y2="118" stroke="#555" stroke-width="2" stroke-dasharray="5,4"/>
+                        <line x1="180" y1="122" x2="270" y2="122" stroke="#555" stroke-width="2" stroke-dasharray="5,4"/>
+                        <line x1="180" y1="126" x2="270" y2="126" stroke="#555" stroke-width="2" stroke-dasharray="5,4"/>
+                        
+                        <line x1="180" y1="238" x2="270" y2="238" stroke="#555" stroke-width="2" stroke-dasharray="5,4"/>
+                        <line x1="180" y1="242" x2="270" y2="242" stroke="#555" stroke-width="2" stroke-dasharray="5,4"/>
+                        <line x1="180" y1="246" x2="270" y2="246" stroke="#555" stroke-width="2" stroke-dasharray="5,4"/>
+                        
+                        <!-- Цифры-метки -->
+                        <circle cx="25" cy="130" r="20" fill="#ffcc80" stroke="#ef6c00" stroke-width="2"/>
+                        <text x="25" y="137" text-anchor="middle" fill="#5d4037" font-size="20" font-weight="bold">1</text>
+                        <line x1="45" y1="130" x2="72" y2="130" stroke="#ef6c00" stroke-width="2"/>
+                        
+                        <circle cx="225" cy="150" r="20" fill="#ffcc80" stroke="#ef6c00" stroke-width="2"/>
+                        <text x="225" y="157" text-anchor="middle" fill="#5d4037" font-size="20" font-weight="bold">2</text>
+                        <line x1="225" y1="170" x2="225" y2="179" stroke="#ef6c00" stroke-width="2"/>
+                        
+                        <circle cx="410" cy="120" r="20" fill="#ffcc80" stroke="#ef6c00" stroke-width="2"/>
+                        <text x="410" y="127" text-anchor="middle" fill="#5d4037" font-size="20" font-weight="bold">3</text>
+                        <line x1="390" y1="120" x2="350" y2="122" stroke="#ef6c00" stroke-width="2"/>
+                    </svg>
+                    <p class="image-caption">Фрагмент молекулы ДНК</p>
+                </div>
+                <div style="margin-top: 15px;">
+                    <input type="number" id="q10" min="1" max="3" placeholder="Введите цифру" style="width: 100px;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Задание 11: Сравнительная таблица (без подсказок) -->
+        <div class="task" id="task11">
+            <div class="task-title"><span class="task-number">11</span>Сравнительная таблица</div>
+            <div class="task-content">
+                <p>Заполните таблицу, сравнив ДНК и РНК:</p>
+                <table>
+                    <tr>
+                        <th>Признак</th>
+                        <th>ДНК</th>
+                        <th>РНК</th>
+                    </tr>
+                    <tr>
+                        <td>Сахар</td>
+                        <td><input type="text" id="q11a"></td>
+                        <td><input type="text" id="q11b"></td>
+                    </tr>
+                    <tr>
+                        <td>Азотистые основания</td>
+                        <td>А, Г, Ц, Т</td>
+                        <td><input type="text" id="q11c"></td>
+                    </tr>
+                    <tr>
+                        <td>Структура</td>
+                        <td><input type="text" id="q11d"></td>
+                        <td>Одинарная цепь</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Задание 12: Выбор одного (водородные связи) -->
+        <div class="task" id="task12">
+            <div class="task-title"><span class="task-number">12</span>Выберите один правильный ответ</div>
+            <div class="task-content">
+                <p>Сколько водородных связей образуется между комплементарными цепями ДНК на участке, содержащем 10 пар нуклеотидов, если в одной цепи содержится 4 аденина?</p>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> 20
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> 24
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> 26
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> 30
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Задание 13: Соответствие (ферменты) -->
+        <div class="task" id="task13">
+            <div class="task-title"><span class="task-number">13</span>Установите соответствие</div>
+            <div class="task-content">
+                <p>Установите соответствие между ферментами и их функциями при работе с нуклеиновыми кислотами:</p>
+                <div class="matching-row">
+                    <div class="matching-left">А) ДНК-полимераза</div>
+                    <div class="matching-right">
+                        <select id="q13a">
+                            <option value="">Выберите...</option>
+                            <option value="1">Синтезирует РНК на матрице ДНК</option>
+                            <option value="2">Сшивает фрагменты ДНК</option>
+                            <option value="3">Синтезирует новую цепь ДНК</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="matching-row">
+                    <div class="matching-left">Б) РНК-полимераза</div>
+                    <div class="matching-right">
+                        <select id="q13b">
+                            <option value="">Выберите...</option>
+                            <option value="1">Синтезирует РНК на матрице ДНК</option>
+                            <option value="2">Сшивает фрагменты ДНК</option>
+                            <option value="3">Синтезирует новую цепь ДНК</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="matching-row">
+                    <div class="matching-left">В) ДНК-лигаза</div>
+                    <div class="matching-right">
+                        <select id="q13c">
+                            <option value="">Выберите...</option>
+                            <option value="1">Синтезирует РНК на матрице ДНК</option>
+                            <option value="2">Сшивает фрагменты ДНК</option>
+                            <option value="3">Синтезирует новую цепь ДНК</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Задание 14: Выбор нескольких (свойства генкода) -->
+        <div class="task" id="task14">
+            <div class="task-title"><span class="task-number">14</span>Выберите несколько правильных ответов</div>
+            <div class="task-content">
+                <p>Какие свойства характерны для генетического кода? Выберите три верных ответа.</p>
+                <div class="options">
+                    <label class="option">
+                        <input type="checkbox" name="q14" value="a"> Триплетность
+                    </label>
+                    <label class="option">
+                        <input type="checkbox" name="q14" value="b"> Специфичность для каждого организма
+                    </label>
+                    <label class="option">
+                        <input type="checkbox" name="q14" value="c"> Вырожденность (избыточность)
+                    </label>
+                    <label class="option">
+                        <input type="checkbox" name="q14" value="d"> Неперекрываемость
+                    </label>
+                    <label class="option">
+                        <input type="checkbox" name="q14" value="e"> Зависимость от температуры
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Задание 15: Свободный ответ (самопроверка) -->
+        <div class="task" id="task15">
+            <div class="task-title"><span class="task-number">15</span>Задание со свободным ответом</div>
+            <div class="task-content">
+                <p>Опишите строение нуклеотида РНК и укажите его отличия от нуклеотида ДНК. Назовите все компоненты и их особенности.</p>
+                <textarea id="q15" placeholder="Введите ваш ответ..."></textarea>
+                
+                <div id="model-answer-15" style="display: none; margin-top: 15px; padding: 15px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 5px;">
+                    <strong>📌 Эталонный ответ (критерии проверки):</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.6;">
+                        <li>Нуклеотид РНК состоит из трёх компонентов: азотистого основания, пятиуглеродного сахара и остатка фосфорной кислоты.</li>
+                        <li>Отличие 1 (сахар): в состав нуклеотида РНК входит сахар <b>рибоза</b>, а в ДНК — дезоксирибоза.</li>
+                        <li>Отличие 2 (азотистые основания): в РНК вместо тимина (Т) содержится азотистое основание <b>урацил (У)</b>.</li>
+                    </ul>
+                    <label style="display: flex; align-items: center; margin-top: 15px; cursor: pointer; font-weight: bold; color: #1565c0;">
+                        <input type="checkbox" id="self-check-15" style="width: 20px; height: 20px; margin-right: 10px;">
+                        Я проверил(а) свой ответ: он содержит все ключевые элементы из списка выше
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="checkAnswers()">Проверить ответы</button>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        // Правильные ответы
+        const correctAnswers = {
+            q1: 'c',
+            q2: ['a', 'b', 'd'],
+            q3: { a: '3', b: '1', c: '2', d: '3' },
+            q4: '1',
+            q6: '23415',
+            q7: ['a', 'c', 'e'],
+            q8: { a: '2', b: '2', c: '1', d: '3' },
+            q10: '2',
+            q12: 'c',
+            q13: { a: '3', b: '1', c: '2' },
+            q14: ['a', 'c', 'd']
+        };
+
+        function checkAnswers() {
+            let correct = 0;
+            let total = 15;
+            let results = [];
+
+            // Задание 1
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            if (q1 && q1.value === correctAnswers.q1) {
+                correct++;
+                results.push('✓ Задание 1 верно');
+            } else {
+                results.push('✗ Задание 1 неверно');
+            }
+
+            // Задание 2
+            const q2 = Array.from(document.querySelectorAll('input[name="q2"]:checked')).map(cb => cb.value);
+            if (q2.length === correctAnswers.q2.length && q2.every(v => correctAnswers.q2.includes(v))) {
+                correct++;
+                results.push('✓ Задание 2 верно');
+            } else {
+                results.push('✗ Задание 2 неверно');
+            }
+
+            // Задание 3
+            const q3Correct = (document.getElementById('q3a').value === correctAnswers.q3.a) &&
+                             (document.getElementById('q3b').value === correctAnswers.q3.b) &&
+                             (document.getElementById('q3c').value === correctAnswers.q3.c) &&
+                             (document.getElementById('q3d').value === correctAnswers.q3.d);
+            if (q3Correct) {
+                correct++;
+                results.push('✓ Задание 3 верно');
+            } else {
+                results.push('✗ Задание 3 неверно');
+            }
+
+            // Задание 4
+            const q4 = document.getElementById('q4').value;
+            if (q4 === correctAnswers.q4) {
+                correct++;
+                results.push('✓ Задание 4 верно');
+            } else {
+                results.push('✗ Задание 4 неверно');
+            }
+
+            // Задание 5 (проверка по ключевым словам)
+            const q5a = document.getElementById('q5a').value.toLowerCase();
+            const q5b = document.getElementById('q5b').value.toLowerCase();
+            const q5c = document.getElementById('q5c').value.toLowerCase();
+            const q5aOk = q5a.includes('информ') || q5a.includes('матриц') || q5a.includes('перенос') || q5a.includes('кодир') || q5a.includes('бел');
+            const q5bOk = q5b.includes('ядр');
+            const q5cOk = q5c.includes('ррнк') || q5c.includes('рибосом');
+            if (q5aOk && q5bOk && q5cOk) {
+                correct++;
+                results.push('✓ Задание 5 верно');
+            } else {
+                results.push('✗ Задание 5 неверно');
+            }
+
+            // Задание 6 (последовательность цифр)
+            const q6 = document.getElementById('q6').value.replace(/\s/g, '');
+            if (q6 === correctAnswers.q6) {
+                correct++;
+                results.push('✓ Задание 6 верно');
+            } else {
+                results.push('✗ Задание 6 неверно');
+            }
+
+            // Задание 7
+            const q7 = Array.from(document.querySelectorAll('input[name="q7"]:checked')).map(cb => cb.value);
+            if (q7.length === correctAnswers.q7.length && q7.every(v => correctAnswers.q7.includes(v))) {
+                correct++;
+                results.push('✓ Задание 7 верно');
+            } else {
+                results.push('✗ Задание 7 неверно');
+            }
+
+            // Задание 8
+            const q8Correct = (document.getElementById('q8a').value === correctAnswers.q8.a) &&
+                             (document.getElementById('q8b').value === correctAnswers.q8.b) &&
+                             (document.getElementById('q8c').value === correctAnswers.q8.c) &&
+                             (document.getElementById('q8d').value === correctAnswers.q8.d);
+            if (q8Correct) {
+                correct++;
+                results.push('✓ Задание 8 верно');
+            } else {
+                results.push('✗ Задание 8 неверно');
+            }
+
+            // Задание 9 (самопроверка с эталоном)
+            document.getElementById('model-answer-9').style.display = 'block';
+            if (document.getElementById('self-check-9').checked) {
+                correct++;
+                results.push('✓ Задание 9: верно (самопроверка)');
+            } else {
+                results.push('⚠ Задание 9: сверьте свой ответ с эталоном и отметьте галочку, если всё верно');
+            }
+
+            // Задание 10
+            const q10 = document.getElementById('q10').value;
+            if (q10 === correctAnswers.q10) {
+                correct++;
+                results.push('✓ Задание 10 верно');
+            } else {
+                results.push('✗ Задание 10 неверно');
+            }
+
+            // Задание 11 (проверка по ключевым словам)
+            const q11a = document.getElementById('q11a').value.toLowerCase();
+            const q11b = document.getElementById('q11b').value.toLowerCase();
+            const q11c = document.getElementById('q11c').value.toLowerCase();
+            const q11d = document.getElementById('q11d').value.toLowerCase();
+            const q11aOk = q11a.includes('дезокси');
+            const q11bOk = q11b.includes('рибоз');
+            const q11cOk = q11c.includes('у');
+            const q11dOk = q11d.includes('двойн');
+            if (q11aOk && q11bOk && q11cOk && q11dOk) {
+                correct++;
+                results.push('✓ Задание 11 верно');
+            } else {
+                results.push('✗ Задание 11 неверно');
+            }
+
+            // Задание 12
+            const q12 = document.querySelector('input[name="q12"]:checked');
+            if (q12 && q12.value === correctAnswers.q12) {
+                correct++;
+                results.push('✓ Задание 12 верно');
+            } else {
+                results.push('✗ Задание 12 неверно');
+            }
+
+            // Задание 13
+            const q13Correct = (document.getElementById('q13a').value === correctAnswers.q13.a) &&
+                              (document.getElementById('q13b').value === correctAnswers.q13.b) &&
+                              (document.getElementById('q13c').value === correctAnswers.q13.c);
+            if (q13Correct) {
+                correct++;
+                results.push('✓ Задание 13 верно');
+            } else {
+                results.push('✗ Задание 13 неверно');
+            }
+
+            // Задание 14
+            const q14 = Array.from(document.querySelectorAll('input[name="q14"]:checked')).map(cb => cb.value);
+            if (q14.length === correctAnswers.q14.length && q14.every(v => correctAnswers.q14.includes(v))) {
+                correct++;
+                results.push('✓ Задание 14 верно');
+            } else {
+                results.push('✗ Задание 14 неверно');
+            }
+
+            // Задание 15 (самопроверка с эталоном)
+            document.getElementById('model-answer-15').style.display = 'block';
+            if (document.getElementById('self-check-15').checked) {
+                correct++;
+                results.push('✓ Задание 15: верно (самопроверка)');
+            } else {
+                results.push('⚠ Задание 15: сверьте свой ответ с эталоном и отметьте галочку, если всё верно');
+            }
+
+            // Показываем результат
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h2>Результат: ${correct} из ${total}</h2>
+                <p>${correct === total ? '🎉 Отличная работа! Все задания выполнены верно!' : 'Есть ошибки. Проверьте ответы выше.'}</p>
+                <div style="text-align: left; margin-top: 15px; font-size: 14px;">
+                    ${results.join('<br>')}
+                </div>
+            `;
+            resultDiv.className = 'result ' + (correct >= 12 ? 'success' : 'error');
+            
+            // Прокрутка к результату
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Добавляем интерактивность для опций
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const input = this.querySelector('input');
+                if (input.type === 'radio') {
+                    document.querySelectorAll(`input[name="${input.name}"]`).forEach(radio => {
+                        radio.closest('.option').classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                } else {
+                    this.classList.toggle('selected');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
